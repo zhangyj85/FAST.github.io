@@ -4,11 +4,6 @@
 (function(){
   'use strict';
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-  const synthetic=seed=>{
-    const points=window.syntheticFASTCloud(seed),positions=new Float32Array(points.length*3),colors=new Uint8Array(points.length*3);
-    points.forEach((p,i)=>{positions.set([p.x,p.y,p.z],i*3);colors.set(p.c.match(/\d+/g).map(Number),i*3);});
-    return FastCloudIO.prepare(FastCloudIO.cloud(positions,colors,points.length));
-  };
   const vertex=`
     attribute vec3 aPosition;
     attribute vec3 aColor;
@@ -40,9 +35,10 @@
     constructor(canvas,{onStatus=()=>{}}={}){
       this.canvas=canvas;this.onStatus=onStatus;this.yaw=.28;this.pitch=.22;this.zoom=1;this.pointSize=1.25;
       this.autoRotate=true;this.visible=false;this.dirty=true;this.loadToken=0;this.cache=new Map();
+      this.cloud=null;this.isReal=false;this.loadState='idle';this.defaultDistance=1;
       this.motion=matchMedia('(prefers-reduced-motion: reduce)');this.swayStart=performance.now();
       this.initRenderer();this.bindControls();
-      this.setCloud(synthetic(1));
+      this.clearCloud();
       this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(canvas.parentElement);
       if('IntersectionObserver' in window){
         this.intersect=new IntersectionObserver(entries=>{this.visible=entries[0].isIntersecting;this.schedule();},{threshold:.01});this.intersect.observe(canvas);
@@ -51,7 +47,7 @@
       document.addEventListener('visibilitychange',this.onVisibility);
       this.motion.addEventListener('change',this.onMotion);
       canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();this.contextLost=true;this.onStatus('contextlost');});
-      canvas.addEventListener('webglcontextrestored',()=>{this.contextLost=false;this.initRenderer();this.upload();this.invalidate();this.onStatus(this.isReal?'ready':'preview',this.cloud.length);});
+      canvas.addEventListener('webglcontextrestored',()=>{this.contextLost=false;this.positionBuffer=null;this.colorBuffer=null;this.initRenderer();this.upload();this.invalidate();this.onStatus(this.loadState,this.cloud?.length);});
       canvas.fastViewer=this;
       this.resize();this.schedule();
     }
@@ -117,25 +113,22 @@
         worker.postMessage({buffer,maxPoints,rotationX},[buffer]);
       });
     }
-    async load(path,seed=1,{rotationX=0,fallbackPath=null}={}){
+    async load(path,{rotationX=0}={}){
       const token=++this.loadToken;
       this.abort?.abort();this.workerReject?.(new Error('Superseded cloud load'));this.worker?.terminate();this.worker=null;this.workerReject=null;
       this.abort=new AbortController();
-      if(!path){this.isReal=false;this.setCloud(synthetic(seed));this.onStatus('preview',this.cloud.length);return;}
+      this.clearCloud();
+      if(!path){this.loadState='error';this.onStatus('error','No point cloud file configured.');return;}
       const key=path+'|'+rotationX;
+      this.loadState='loading';
       this.onStatus('loading');
       try{
         let data=this.cache.get(key);
         if(!data){
-          let lastError;
-          for(const source of [path,fallbackPath].filter(Boolean)){
-            try{
-              const resp=await fetch(source,{signal:this.abort.signal,cache:'default'});if(!resp.ok)throw new Error('HTTP '+resp.status);
-              const buffer=await resp.arrayBuffer();if(token!==this.loadToken)return;
-              data=await this.decode(buffer,rotationX);break;
-            }catch(error){if(token!==this.loadToken)return;lastError=error;}
-          }
-          if(!data)throw lastError;
+          const resp=await fetch(path,{signal:this.abort.signal,cache:'default'});if(!resp.ok)throw new Error('HTTP '+resp.status);
+          const buffer=await resp.arrayBuffer();if(token!==this.loadToken)return;
+          data=await this.decode(buffer,rotationX);
+          if(token!==this.loadToken)return;
           const bytes=data.positions.byteLength+data.colors.byteLength;
           if(bytes<=64*1024*1024){
             this.cache.set(key,data);
@@ -144,17 +137,20 @@
           }
         }
         if(token!==this.loadToken)return;
-        this.isReal=true;this.setCloud(data);this.onStatus('ready',data.length);
+        this.loadState='ready';this.isReal=true;this.setCloud(data);this.onStatus('ready',data.length);
       }catch(error){
         if(token!==this.loadToken)return;
-        console.warn('Could not load point cloud:',path,error);this.isReal=false;this.setCloud(synthetic(seed));this.onStatus('error',error.message);
+        console.warn('Could not load point cloud:',path,error);this.loadState='error';this.clearCloud();this.onStatus('error',error.message);
       }
     }
     setCloud(data){this.cloud=data;this.canvas.dataset.points=data.length;this.canvas.dataset.sourcePoints=data.sourceCount;this.upload();this.reset();}
+    clearCloud(){this.cloud=null;this.isReal=false;this.canvas.dataset.points='0';this.canvas.dataset.sourcePoints='0';this.upload();this.draw();this.invalidate();}
     upload(){
       if(!this.gl)return;
       const gl=this.gl;
       if(this.positionBuffer)gl.deleteBuffer(this.positionBuffer);if(this.colorBuffer)gl.deleteBuffer(this.colorBuffer);
+      this.positionBuffer=null;this.colorBuffer=null;
+      if(!this.cloud)return;
       this.positionBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,this.positionBuffer);gl.bufferData(gl.ARRAY_BUFFER,this.cloud.positions,gl.STATIC_DRAW);
       this.colorBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,this.colorBuffer);gl.bufferData(gl.ARRAY_BUFFER,this.cloud.colors,gl.STATIC_DRAW);
     }
@@ -186,7 +182,7 @@
     }
     tick(time){
       if(!this.visible||document.hidden||this.contextLost||!this.w||!this.h)return;
-      const moving=this.autoRotate&&!this.motion.matches&&!this.dragging;
+      const moving=Boolean(this.cloud)&&this.autoRotate&&!this.motion.matches&&!this.dragging;
       if(moving)this.yaw=.28+.22*Math.sin((time-this.swayStart)*2*Math.PI/9000);
       if(moving||this.dirty){this.distance=this.defaultDistance/this.zoom;this.draw();this.dirty=false;}
       if(moving)this.schedule();
@@ -201,9 +197,11 @@
     }
     draw(){
       this.drawCount=(this.drawCount||0)+1;
-      if(!this.gl){this.drawFallback();return;}
-      const gl=this.gl,u=this.uniforms,tanV=Math.tan(42*Math.PI/360),near=.03,far=this.distance+Math.max(...this.cloud.bounds.min.map(Math.abs),...this.cloud.bounds.max.map(Math.abs))*4+5;
-      gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(this.program);
+      if(!this.gl){this.ctx.fillStyle='#09101b';this.ctx.fillRect(0,0,this.w||0,this.h||0);if(this.cloud)this.drawFallback();return;}
+      const gl=this.gl;gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+      if(!this.cloud)return;
+      const u=this.uniforms,tanV=Math.tan(42*Math.PI/360),near=.03,far=this.distance+Math.max(...this.cloud.bounds.min.map(Math.abs),...this.cloud.bounds.max.map(Math.abs))*4+5;
+      gl.useProgram(this.program);
       gl.bindBuffer(gl.ARRAY_BUFFER,this.positionBuffer);gl.enableVertexAttribArray(this.attributes.position);gl.vertexAttribPointer(this.attributes.position,3,gl.FLOAT,false,0,0);
       gl.bindBuffer(gl.ARRAY_BUFFER,this.colorBuffer);gl.enableVertexAttribArray(this.attributes.color);gl.vertexAttribPointer(this.attributes.color,3,gl.UNSIGNED_BYTE,true,0,0);
       gl.uniform4f(u.Angles,Math.cos(this.yaw),Math.sin(this.yaw),Math.cos(this.pitch),Math.sin(this.pitch));

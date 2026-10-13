@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=7399e855ee50" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -101,7 +101,6 @@
               <canvas id="cloud-canvas" aria-label="Interactive 3D point cloud. Drag to rotate; Ctrl and scroll, pinch, or plus/minus keys to zoom" tabindex="0"></canvas>
               <div class="cloud-vignette" aria-hidden="true"></div>
               <div class="cloud-axis" aria-hidden="true"><span class="axis-x">X</span><span class="axis-y">Y</span><span class="axis-z">Z</span></div>
-              <div class="cloud-placeholder-title hidden" id="cloud-placeholder-title">SYNTHETIC PREVIEW</div>
             </div>
             <div class="viewer-footer"><label class="point-size-control" for="cloud-point-size">Point size <input id="cloud-point-size" type="range" min="0.6" max="3" step="0.05" value="1.25" /></label><div class="viewer-actions"><button id="cloud-autorotate" type="button" class="mini-button is-active" aria-pressed="true" title="Toggle gentle automatic orbit">⟳ <span>Auto</span></button><button id="cloud-reset" type="button" class="mini-button" title="Reset point-cloud camera">⌖ <span>Reset</span></button></div></div>
           </div>
@@ -129,7 +128,7 @@
             <div id="colmap-frames" class="colmap-frame-list" tabindex="0" aria-label="Scroll vertically through selected input views"></div>
           </div>
           <div class="pointcloud-card colmap-pointcloud-card">
-            <div class="cloud-viewport" id="colmap-cloud-viewport"><span class="viewer-pill cloud-status" id="colmap-cloud-status" role="status">READY TO LOAD</span><canvas id="colmap-cloud-canvas" aria-label="Interactive 3D reconstruction point cloud. Drag to rotate; Ctrl and scroll, pinch, or plus/minus keys to zoom" tabindex="0"></canvas><div class="cloud-vignette" aria-hidden="true"></div><div class="cloud-axis" aria-hidden="true"><span class="axis-x">X</span><span class="axis-y">Y</span><span class="axis-z">Z</span></div><div class="cloud-placeholder-title hidden" id="colmap-cloud-placeholder-title">SYNTHETIC PREVIEW</div></div>
+            <div class="cloud-viewport" id="colmap-cloud-viewport"><span class="viewer-pill cloud-status" id="colmap-cloud-status" role="status">READY TO LOAD</span><canvas id="colmap-cloud-canvas" aria-label="Interactive 3D reconstruction point cloud. Drag to rotate; Ctrl and scroll, pinch, or plus/minus keys to zoom" tabindex="0"></canvas><div class="cloud-vignette" aria-hidden="true"></div><div class="cloud-axis" aria-hidden="true"><span class="axis-x">X</span><span class="axis-y">Y</span><span class="axis-z">Z</span></div></div>
             <div class="viewer-footer"><label class="point-size-control" for="colmap-point-size">Point size <input id="colmap-point-size" type="range" min="0.6" max="3" step="0.05" value="1.25" /></label><div class="viewer-actions"><button id="colmap-cloud-autorotate" type="button" class="mini-button is-active" aria-pressed="true" title="Toggle gentle automatic orbit">⟳ <span>Auto</span></button><button id="colmap-cloud-reset" type="button" class="mini-button" title="Reset point-cloud camera">⌖ <span>Reset</span></button></div></div>
           </div>
         </div>
@@ -142,8 +141,7 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="./content.js"></script>
   <script src="./cloud-data.js"></script>
-  <script src="./pointcloud.js"></script>
-  <script src="./cloud-viewer.js"></script>
-  <script src="./app.js"></script>
+  <script src="./cloud-viewer.js?v=66fc6f4ca758"></script>
+  <script src="./app.js?v=9bed94c0620b"></script>
 </body>
 </html>

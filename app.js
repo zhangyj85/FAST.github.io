@@ -189,22 +189,21 @@
     const samples=C.stereo;let selected=0;
     const viewer=new FastPointCloudViewer($('cloud-canvas'),{
       onStatus(status,detail){
-        if(status==='ready'){$('cloud-status').textContent=`${detail.toLocaleString()} POINTS`;$('cloud-placeholder-title').classList.add('hidden');}
-        if(status==='preview'){$('cloud-status').textContent='SYNTHETIC PREVIEW';$('cloud-placeholder-title').classList.remove('hidden');}
+        if(status==='ready')$('cloud-status').textContent=`${detail.toLocaleString()} POINTS`;
+        if(status==='idle')$('cloud-status').textContent='READY TO LOAD';
         if(status==='loading'){$('cloud-status').textContent='LOADING CLOUD…';}
         if(status==='contextlost')$('cloud-status').textContent='VIEWER PAUSED';
-        if(status==='error'){$('cloud-status').textContent='CLOUD UNAVAILABLE';$('cloud-placeholder-title').classList.remove('hidden');}
+        if(status==='error')$('cloud-status').textContent='CLOUD UNAVAILABLE';
         if(status==='rotated'){$('cloud-autorotate').classList.remove('is-active');$('cloud-autorotate').setAttribute('aria-pressed','false');}
       }
     });
     function select(i){
       selected=i;const s=samples[i];
-      $('cloud-placeholder-title').classList.add('hidden');
       [...$('stereo-picker').children].forEach((b,n)=>b.setAttribute('aria-pressed',String(i===n)));
       setImage($('stereo-rgb'),s.rgb,`${s.name} left reference image`);
       for(const id of ['stereo-rgb','stereo-disp']){$(id).removeAttribute('width');$(id).removeAttribute('height');}
       setImage($('stereo-disp'),s.disparity,`${s.name} predicted disparity`);
-      viewer.load(s.cloud,s.previewSeed||i+1,{rotationX:s.cloudRotationX||0,fallbackPath:s.cloudPLY||null});
+      viewer.load(s.cloud,{rotationX:s.cloudRotationX||0});
     }
     makePicker($('stereo-picker'),samples,selected,select);select(0);
     $('cloud-point-size').addEventListener('input',e=>viewer.setPointSize(e.target.value));
@@ -276,11 +275,11 @@
     let selected=-1;
     const viewer=new FastPointCloudViewer($('colmap-cloud-canvas'),{
       onStatus(status,detail){
-        if(status==='ready'){$('colmap-cloud-status').textContent=`${detail.toLocaleString()} POINTS`;$('colmap-cloud-placeholder-title').classList.add('hidden');}
-        if(status==='preview'){$('colmap-cloud-status').textContent='SYNTHETIC PREVIEW';$('colmap-cloud-placeholder-title').classList.remove('hidden');}
+        if(status==='ready')$('colmap-cloud-status').textContent=`${detail.toLocaleString()} POINTS`;
+        if(status==='idle')$('colmap-cloud-status').textContent='READY TO LOAD';
         if(status==='loading')$('colmap-cloud-status').textContent='LOADING CLOUD…';
         if(status==='contextlost')$('colmap-cloud-status').textContent='VIEWER PAUSED';
-        if(status==='error'){$('colmap-cloud-status').textContent='CLOUD UNAVAILABLE';$('colmap-cloud-placeholder-title').classList.remove('hidden');}
+        if(status==='error')$('colmap-cloud-status').textContent='CLOUD UNAVAILABLE';
         if(status==='rotated'){$('colmap-cloud-autorotate').classList.remove('is-active');$('colmap-cloud-autorotate').setAttribute('aria-pressed','false');}
       }
     });
@@ -298,7 +297,7 @@
         tile.append(img);list.appendChild(tile);
       });
       list.scrollTop=0;
-      viewer.load(s.cloud,s.previewSeed||i+11,{rotationX:s.cloudRotationX||0,fallbackPath:s.cloudPLY||null});
+      viewer.load(s.cloud,{rotationX:s.cloudRotationX||0});
     }
     makePicker($('colmap-picker'),samples,0,select);select(0);
     $('colmap-point-size').addEventListener('input',e=>viewer.setPointSize(e.target.value));
