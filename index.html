@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7f9fc" />
+  <meta name="description" content="FAST: Flow Any Scene Transformer — a scalable foundation model for general-purpose dense correspondence." />
+  <meta property="og:title" content="FAST: Flow Any Scene Transformer" />
+  <meta property="og:description" content="General. Scalable. Zero-parameter attention rewiring." />
+  <title>FAST — Flow Any Scene Transformer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="page-glow" aria-hidden="true"></div>
+  <header class="site-header">
+    <nav class="nav wrap" aria-label="Main navigation">
+      <div class="nav-brand">Flow Any Scene Transformer</div>
+      <div class="nav-links"><a href="#overview">Overview</a><a class="nav-results-label" href="#results">Results</a><a href="#demo">Demos</a><a href="#bibtex">BibTeX</a></div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero wrap" id="overview" aria-labelledby="hero-title">
+      <h1 id="hero-title"><span class="hero-keyword">FAST</span>: Flow Any Scene Transformer</h1>
+      <div id="author-list" class="author-list" aria-label="Paper authors"></div>
+      <div id="affiliation-list" class="affiliation-list"></div>
+      <div class="resource-buttons" aria-label="Project resources">
+        <a id="paper-link" class="pill-button pill-primary" href="https://arxiv.org/pdf/2609.39748" target="_blank" rel="noopener"><svg class="resource-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h7l4 4V20.5H7a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z"/><path d="M14 3.5v4h4M9 12h6M9 16h6"/></svg> Paper</a>
+        <a id="github-link" class="pill-button pill-light" href="#" data-unavailable="true"><svg class="resource-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19.2c-4.1 1.25-4.1-2.3-5.8-2.8m11.6 4.7v-3.1a2.8 2.8 0 0 0-.75-2.16c2.65-.3 5.45-1.3 5.45-5.95a4.65 4.65 0 0 0-1.28-3.2 4.32 4.32 0 0 0-.08-3.16s-1.05-.33-3.35 1.25a11.4 11.4 0 0 0-6.1 0C6.4 3.2 5.35 3.53 5.35 3.53a4.32 4.32 0 0 0-.08 3.16 4.65 4.65 0 0 0-1.28 3.2c0 4.64 2.8 5.65 5.45 5.95a2.8 2.8 0 0 0-.75 2.16v3.1" stroke-linecap="round" stroke-linejoin="round"/></svg> GitHub</a>
+        <a href="#bibtex" class="pill-button pill-light"><svg class="resource-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8.5 6-5 6 5 6M15.5 6l5 6-5 6M13.5 4l-3 16" stroke-linecap="round" stroke-linejoin="round"/></svg> BibTeX</a>
+      </div>
+    </section>
+
+    <section class="teaser-section wrap" aria-label="FAST teaser image">
+      <div class="section-cap"><span class="small-kicker">01 / OVERVIEW</span></div>
+      <p class="teaser-caption" id="teaser-caption">Any Pair In, Any Correspondence Out</p>
+      <div class="teaser-card" id="teaser-card">
+        <img id="teaser-image" class="teaser-image" src="./assets/teaser/architecture.webp?v=11ed5e9487e3" width="2400" height="941" alt="FAST architecture: input image pairs pass through a shared DINOv3 backbone with attention rewiring and a DPT head to predict dense correspondence" />
+        <div class="teaser-empty hidden" id="teaser-empty">
+          <div class="teaser-placeholder-icon" aria-hidden="true"><span>✳</span></div>
+          <span class="placeholder-overline">FAST IN A GLANCE</span>
+          <h2>Architecture &amp; Applications</h2>
+          <p>Loading the FAST architecture figure</p>
+        </div>
+      </div>
+      <p class="teaser-description">FAST consists only of a DINOv3 backbone and a DPT head. In a single forward pass, it jointly regresses bidirectional optical flow <span class="caption-formula" role="math" aria-label="mu hat from zero to one and mu hat from one to zero"><span aria-hidden="true">{<span class="formula-token"><span class="formula-hat">μ</span><sub>0 → 1</sub></span>, <span class="formula-token"><span class="formula-hat">μ</span><sub>1 → 0</sub></span>}</span></span>, confidence maps <span class="caption-formula" role="math" aria-label="C hat zero and C hat one"><span aria-hidden="true">{<span class="formula-token"><span class="formula-hat math-vector">C</span><sub>0</sub></span>, <span class="formula-token"><span class="formula-hat math-vector">C</span><sub>1</sub></span>}</span></span>, and covisibility masks <span class="caption-formula" role="math" aria-label="M hat zero and M hat one"><span aria-hidden="true">{<span class="formula-token"><span class="formula-hat math-vector">M</span><sub>0</sub></span>, <span class="formula-token"><span class="formula-hat math-vector">M</span><sub>1</sub></span>}</span></span> from an RGB image pair.</p>
+    </section>
+
+    <section class="impact-section wrap" aria-label="FAST advantages">
+      <div class="impact-intro"><span class="small-kicker">ADVANTAGES</span><p>Built for <strong>simple, scalable, general, and accurate</strong> correspondence matching.</p></div>
+      <div class="impact-grid" id="impact-grid"></div>
+    </section>
+
+    <section class="narrative wrap" aria-label="Project summary">
+      <div class="narrative-title"><span class="small-kicker">THE IDEA, IN SHORT</span><h2>From Perception<br />to <span>Matching</span></h2></div>
+      <div class="narrative-body card"><p>DINOv3 is a pretrained visual perception model whose representations provide reusable cross-view matching priors. FAST adapts this perception backbone for dense correspondence through <strong>zero-parameter attention rewiring</strong>, without adding dedicated Transformer matching blocks.</p><p>Flow-6M, a unified training corpus of <strong>nearly six million image pairs</strong>, supports correspondence learning across dynamic scenes and static scenes with different camera viewpoints.</p></div>
+    </section>
+
+    <section class="results-section section-pad" id="results" aria-labelledby="results-title">
+      <div class="wrap">
+        <div class="section-heading"><div><span class="small-kicker">02 / QUALITATIVE & QUANTITATIVE</span><h2 id="results-title">One Model, <span>Many Tasks</span></h2></div></div>
+        <div id="result-tabs" class="segmented" role="tablist" aria-label="Result categories"></div>
+        <div class="result-tables" id="result-tables"></div>
+        <div class="result-showcase card">
+          <div class="result-showcase-header"><div><h3 id="result-showcase-title">Optical Flow Estimation</h3></div><div id="wide-method-slot" class="hidden"></div></div>
+          <div class="result-demo-layout">
+          <div id="result-preview-picker" class="result-preview-picker" role="group" aria-label="Choose a visual comparison sample"></div>
+          <div class="result-demo-sample">
+          <div class="compare-stage" id="compare-stage">
+            <img id="compare-base" alt="Selected method prediction" />
+            <div class="compare-overlay" id="compare-overlay"><img id="compare-top" alt="Input image" /></div>
+            <div class="compare-badge badge-left" id="compare-left-label">INPUT</div>
+            <label id="result-method-control" class="method-control is-overlay" for="result-method"><select id="result-method" aria-label="Choose the prediction method"></select></label>
+            <div class="compare-divider" id="compare-divider"><span class="compare-handle" aria-hidden="true">‹ ›</span></div>
+            <input type="range" min="0" max="100" value="50" id="compare-range" aria-label="Drag to compare input and prediction" />
+          </div>
+          <div id="wide-grid" class="wide-grid hidden" aria-label="Input image pair and bidirectional warping results"></div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="demos-section section-pad wrap" id="demo" aria-labelledby="demo-title">
+      <div class="section-heading demo-heading"><div><span class="small-kicker">03 / INTERACTIVE EXPLORATION</span><h2 id="demo-title">See FAST <span>Across Multiple Tasks</span></h2></div></div>
+
+      <article class="demo-card" id="stereo-demo" aria-labelledby="stereo-title">
+        <div class="demo-title-row"><h3 id="stereo-title">Stereo <span>Matching</span></h3></div>
+        <div id="stereo-picker" class="sample-picker" aria-label="Choose a stereo scene"></div>
+        <div class="stereo-layout">
+          <div class="stereo-images">
+            <div class="image-tile"><div class="tile-header">Input</div><img id="stereo-rgb" src="./assets/stereo/Middlebury/Staircase/previews/left.jpg" width="704" height="477" loading="lazy" decoding="async" alt="Staircase left reference image" /></div>
+            <div class="image-tile"><div class="tile-header">Disparity</div><img id="stereo-disp" src="./assets/stereo/Middlebury/Staircase/previews/disparity.jpg" width="704" height="477" loading="lazy" decoding="async" alt="Staircase predicted disparity" /></div>
+          </div>
+          <div class="pointcloud-card">
+            <div class="cloud-viewport" id="cloud-viewport">
+              <span class="viewer-pill cloud-status" id="cloud-status" role="status">READY TO LOAD</span>
+              <canvas id="cloud-canvas" aria-label="Interactive 3D point cloud. Drag to rotate; Ctrl and scroll, pinch, or plus/minus keys to zoom" tabindex="0"></canvas>
+              <div class="cloud-vignette" aria-hidden="true"></div>
+              <div class="cloud-axis" aria-hidden="true"><span class="axis-x">X</span><span class="axis-y">Y</span><span class="axis-z">Z</span></div>
+              <div class="cloud-placeholder-title hidden" id="cloud-placeholder-title">SYNTHETIC PREVIEW</div>
+            </div>
+            <div class="viewer-footer"><label class="point-size-control" for="cloud-point-size">Point size <input id="cloud-point-size" type="range" min="0.6" max="3" step="0.05" value="1.25" /></label><div class="viewer-actions"><button id="cloud-autorotate" type="button" class="mini-button is-active" aria-pressed="true" title="Toggle gentle automatic orbit">⟳ <span>Auto</span></button><button id="cloud-reset" type="button" class="mini-button" title="Reset point-cloud camera">⌖ <span>Reset</span></button></div></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="demo-card video-demo" id="flow-demo" aria-labelledby="flow-title">
+        <div class="demo-title-row"><h3 id="flow-title">Optical Flow <span>Estimation</span></h3></div>
+        <div id="flow-picker" class="sample-picker video-picker" aria-label="Choose an optical flow video sequence"></div>
+        <div class="video-player-card" id="flow-video-card"><video id="flow-video" controls playsinline preload="none" class="demo-video hidden"></video><div id="flow-video-placeholder" class="video-placeholder"><img id="flow-video-poster" src="./assets/placeholders/flow.svg" alt="Illustrative optical flow video poster" /><div class="video-overlay"><div class="play-outline" aria-hidden="true">▶</div><div class="video-overlay-label">VIDEO PREVIEW</div><p>Video demonstration coming soon</p></div></div></div>
+      </article>
+
+      <article class="demo-card video-demo" id="ego-demo" aria-labelledby="ego-title">
+        <div class="demo-title-row"><h3 id="ego-title">Ego–Exo <span>Wide-Baseline Matching</span></h3></div>
+        <div id="ego-picker" class="sample-picker video-picker" aria-label="Choose an Ego4D video sequence"></div>
+        <div class="video-player-card" id="ego-video-card"><video id="ego-video" controls playsinline preload="none" class="demo-video hidden" aria-describedby="ego-video-caption"></video><div id="ego-video-placeholder" class="video-placeholder"><img id="ego-video-poster" src="./assets/placeholders/ego.svg" alt="Illustrative Ego4D video poster" /><div class="video-overlay"><div class="play-outline" aria-hidden="true">▶</div><div class="video-overlay-label">VIDEO PREVIEW</div><p>Video demonstration coming soon</p></div></div></div>
+        <p class="video-demo-caption" id="ego-video-caption">The top two panels show the Ego and Exo input videos, respectively. The bottom two panels show the Ego video reconstructed from Exo and the Exo video reconstructed from Ego using FAST.</p>
+      </article>
+      <article class="demo-card colmap-demo" id="colmap-demo" aria-labelledby="colmap-title">
+        <div class="demo-title-row"><div><h3 id="colmap-title">3D <span>Reconstruction from Images Alone</span></h3></div></div>
+        <div id="colmap-picker" class="sample-picker" aria-label="Choose a 3D reconstruction scene"></div>
+        <div class="colmap-layout">
+          <div class="colmap-frames-card">
+            <div class="colmap-frames-header">Input views</div>
+            <div id="colmap-frames" class="colmap-frame-list" tabindex="0" aria-label="Scroll vertically through selected input views"></div>
+          </div>
+          <div class="pointcloud-card colmap-pointcloud-card">
+            <div class="cloud-viewport" id="colmap-cloud-viewport"><span class="viewer-pill cloud-status" id="colmap-cloud-status" role="status">READY TO LOAD</span><canvas id="colmap-cloud-canvas" aria-label="Interactive 3D reconstruction point cloud. Drag to rotate; Ctrl and scroll, pinch, or plus/minus keys to zoom" tabindex="0"></canvas><div class="cloud-vignette" aria-hidden="true"></div><div class="cloud-axis" aria-hidden="true"><span class="axis-x">X</span><span class="axis-y">Y</span><span class="axis-z">Z</span></div><div class="cloud-placeholder-title hidden" id="colmap-cloud-placeholder-title">SYNTHETIC PREVIEW</div></div>
+            <div class="viewer-footer"><label class="point-size-control" for="colmap-point-size">Point size <input id="colmap-point-size" type="range" min="0.6" max="3" step="0.05" value="1.25" /></label><div class="viewer-actions"><button id="colmap-cloud-autorotate" type="button" class="mini-button is-active" aria-pressed="true" title="Toggle gentle automatic orbit">⟳ <span>Auto</span></button><button id="colmap-cloud-reset" type="button" class="mini-button" title="Reset point-cloud camera">⌖ <span>Reset</span></button></div></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="citation-section section-pad" id="bibtex" aria-labelledby="bibtex-title"><div class="wrap"><div class="section-heading"><div><span class="small-kicker">04 / CITE THIS WORK</span><h2 id="bibtex-title">BibTeX</h2></div></div><div class="bibtex-card"><div class="bibtex-top"><button type="button" class="copy-button" id="copy-bibtex"><span id="copy-text">Copy</span></button></div><pre><code id="bibtex-content" class="bibtex-code"></code></pre></div></div></section>
+  </main>
+  <footer class="footer wrap"><p>Flow Any Scene Transformer</p><a class="back-top" href="#top">BACK TO TOP <span aria-hidden="true">↑</span></a></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./content.js"></script>
+  <script src="./cloud-data.js"></script>
+  <script src="./pointcloud.js"></script>
+  <script src="./cloud-viewer.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
